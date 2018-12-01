@@ -5,8 +5,11 @@
 '''
 
 import wpilib
+import wpilib.drive.differentialdrive as dd
+
 import commandbased
 import ctre
+
 
 #main robot
 
@@ -15,27 +18,25 @@ class MyRobot(commandbased.CommandBasedRobot):
         self.motors = {}
         self.motors['leftMotor'] = ctre.WPI_TalonSRX(0)
         self.motors['rightMotor'] = ctre.WPI_TalonSRX(1)
-        
-    def testInit(self):
+        self.driveTrain = dd.DifferentialDrive(**self.motors)
+        self.driveController = wpilib.XboxController(0)
+
+    def teleopInit(self):
         print("Test Mode")
-        while self.isTest():
-            self.motors['leftMotor'].set(-50)
-            self.motors['rightMotor'].set(100)
-        print("Done")
-     
-    #Made by Matthew McFarland, the Great Wizard of 
-    def teleopPeriodic(self):
-        self.drive.tankDrive(0)
-   
+        dc = self.driveController
+        while self.isOperatorControl():
+            leftSide = dc.getRawAxis(0)
+            rightSide = dc.getRawAxis(1)
+            self.driveTrain.tankDrive(leftSide, rightSide)
+            
+        print("Test Done")
+            
 
 
 
 
 
-
-
-
-#code to run the robot
+#code to help run the robot
 
 #import sys       
 def exit(retval):
