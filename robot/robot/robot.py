@@ -5,20 +5,23 @@
 '''
 
 import wpilib
-import wpilib.drive.differentialdrive as dd
 
 import commandbased
 import ctre
 
+import subsystems.driveTrain
 
 #main robot
 
 class MyRobot(commandbased.CommandBasedRobot):
+    
     def robotInit(self):
-        self.motors = {}
-        self.motors['leftMotor'] = ctre.WPI_TalonSRX(0)
-        self.motors['rightMotor'] = ctre.WPI_TalonSRX(1)
-        self.driveTrain = dd.DifferentialDrive(**self.motors)
+        MyRobot.getRobot = lambda x=0:self
+        self.driveMotors = {}
+        self.driveMotors['leftMotor'] = ctre.WPI_TalonSRX(0)
+        self.driveMotors['rightMotor'] = ctre.WPI_TalonSRX(1)
+
+        self.dtSub = subsystems.driveTrain.DriveTrainSub(self)
         self.driveController = wpilib.XboxController(0)
 
     def teleopInit(self):
@@ -27,7 +30,7 @@ class MyRobot(commandbased.CommandBasedRobot):
         while self.isOperatorControl():
             leftSide = dc.getRawAxis(0)
             rightSide = dc.getRawAxis(1)
-            self.driveTrain.tankDrive(leftSide, rightSide)
+            self.dtSub.setTankDrive(leftSide,rightSide)
             
         print("Test Done")
             
