@@ -52,4 +52,5 @@ class PhysicsEngine(object):
             l_motor = r_motor = 0
             self.physics_controller.drive(0,0, tm_diff)
         
+        #print(hal_data['joysticks'])
         #.mecanum_drivetrain(lr_motor, rr_motor, lf_motor, rf_motor,speed = 0.01)
