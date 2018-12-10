@@ -4,10 +4,14 @@
     RobotDrive class.
 '''
 
+#add 'team3200' module to the search path
+import os
+import sys
+sys.path.insert(0, os.getcwd() + "\\..")
+import team3200
 import wpilib
 
 import commandbased
-import ctre
 
 import subsystems.driveTrain
 
@@ -16,28 +20,21 @@ import subsystems.driveTrain
 class MyRobot(commandbased.CommandBasedRobot):
     
     def robotInit(self):
-        MyRobot.getRobot = lambda x=0:self
-        self.driveMotors = {}
-        self.driveMotors['leftMotor'] = ctre.WPI_TalonSRX(0)
-        self.driveMotors['rightMotor'] = ctre.WPI_TalonSRX(1)
-
-        self.dtSub = subsystems.driveTrain.DriveTrainSub(self)
+        team3200.getRobot = lambda x=0:self
+        self.dtSub = subsystems.driveTrain.DriveTrainSub()
         self.driveController = wpilib.XboxController(0)
 
-    def teleopInit(self):
-        print("Test Mode")
-        dc = self.driveController
-        while self.isOperatorControl():
-            leftSide = dc.getRawAxis(0)
-            rightSide = dc.getRawAxis(1)
-            self.dtSub.setTankDrive(leftSide,rightSide)
+#    def teleopInit(self):
+#        print("Test Mode")
+#        dc = self.driveController
+#        while self.isOperatorControl():
+#            leftSide = dc.getRawAxis(0)
+#            rightSide = dc.getRawAxis(1)
+#        
+#            self.dtSub.setTankDrive(leftSide,rightSide)
+#            
+#        print("Test Done")
             
-        print("Test Done")
-            
-
-
-
-
 
 #code to help run the robot
 
@@ -51,4 +48,9 @@ if __name__ == '__main__':
         print(wpilib._impl.main.exit)
     except:
         wpilib._impl.main.exit = exit
+    
+    #fixes simulation rerun errors.
+    #todo verify this causes no issues on robot
+    wpilib.DriverStation._reset()
+    
     wpilib.run(MyRobot,physics_enabled=True)
